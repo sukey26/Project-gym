@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健身房会员管理系统 - 注册</title>
+</head>
+<link rel="stylesheet" href="./gym_register.css">
+
+<body>
+
+    <div class="register-container">
+        <div class="gym-logo">
+            <h1>健身房会员注册</h1>
+            <p>创建您的会员账号</p>
+        </div>
+
+        <form id="registerForm" class="register-form">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" placeholder="请设置登录用户名">
+                <div class="error-message" id="usernameError">用户名不能为空，且至少4位</div>
+            </div>
+
+            <div class="form-group">
+                <label for="memberCard">会员卡号</label>
+                <input type="text" id="memberCard" name="memberCard" placeholder="请输入会员卡号">
+                <div class="error-message" id="memberCardError">会员卡号不能为空</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">设置密码</label>
+                <input type="password" id="password" name="password" placeholder="请设置登录密码">
+                <div class="error-message" id="passwordError">密码不能为空，且至少6位</div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPwd">确认密码</label>
+                <input type="password" id="confirmPwd" name="confirmPwd" placeholder="请再次输入密码">
+                <div class="error-message" id="confirmPwdError">两次输入的密码不一致</div>
+            </div>
+
+            <div class="form-group">
+                <label for="realName">真实姓名</label>
+                <input type="text" id="realName" name="realName" placeholder="请输入您的真实姓名">
+                <div class="error-message" id="realNameError">真实姓名不能为空</div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">联系电话</label>
+                <input type="tel" id="phone" name="phone" placeholder="请输入您的手机号码">
+                <div class="error-message" id="phoneError">请输入有效的手机号码</div>
+            </div>
+
+            <div class="form-group">
+                <label for="memberType">会员类型</label>
+                <select id="memberType" name="memberType">
+                    <option value="">请选择会员类型</option>
+                    <option value="month">月卡会员</option>
+                    <option value="quarter">季卡会员</option>
+                    <option value="year">年卡会员</option>
+                    <option value="vip">VIP会员</option>
+                </select>
+                <div class="error-message" id="memberTypeError">请选择会员类型</div>
+            </div>
+
+            <div class="agreement">
+                <input type="checkbox" id="agree" name="agree">
+                <label for="agree">我已阅读并同意<a href="#">《健身房会员服务协议》</a>和<a href="#">《隐私政策》</a></label>
+            </div>
+            <!-- 调整错误提示位置，避免错位 -->
+            <div class="error-message" id="agreeError">请阅读并同意相关协议</div>
+
+            <button type="submit" class="register-btn">完成注册</button>
+        </form>
+
+        <div class="form-footer">
+            已有账号？<a href="gym_登录.html" target="_blank">立即登录</a> | <a href="#">联系管理员</a>
+        </div>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        const usernameInput = document.getElementById('username');
+        const memberCardInput = document.getElementById('memberCard');
+        const passwordInput = document.getElementById('password');
+        const confirmPwdInput = document.getElementById('confirmPwd');
+        const realNameInput = document.getElementById('realName');
+        const phoneInput = document.getElementById('phone');
+        const memberTypeSelect = document.getElementById('memberType');
+        const agreeCheckbox = document.getElementById('agree');
+
+        const errorElements = {
+            username: document.getElementById('usernameError'),
+            memberCard: document.getElementById('memberCardError'),
+            password: document.getElementById('passwordError'),
+            confirmPwd: document.getElementById('confirmPwdError'),
+            realName: document.getElementById('realNameError'),
+            phone: document.getElementById('phoneError'),
+            memberType: document.getElementById('memberTypeError'),
+            agree: document.getElementById('agreeError')
+        };
+
+        const phoneRegex = /^1[3-9]\d{9}$/;
+
+        function hideAllErrors() {
+            Object.values(errorElements).forEach(el => el.style.display = 'none');
+        }
+
+        registerForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            hideAllErrors();
+            let isValid = true;
+
+            if (usernameInput.value.trim() === '') {
+                errorElements.username.textContent = '用户名不能为空';
+                errorElements.username.style.display = 'block';
+                isValid = false;
+            } else if (usernameInput.value.length < 4) {
+                errorElements.username.textContent = '用户名至少需要4位';
+                errorElements.username.style.display = 'block';
+                isValid = false;
+            }
+
+            if (memberCardInput.value.trim() === '') {
+                errorElements.memberCard.style.display = 'block';
+                isValid = false;
+            }
+
+            if (passwordInput.value.trim() === '') {
+                errorElements.password.textContent = '密码不能为空';
+                errorElements.password.style.display = 'block';
+                isValid = false;
+            } else if (passwordInput.value.length < 6) {
+                errorElements.password.textContent = '密码至少需要6位';
+                errorElements.password.style.display = 'block';
+                isValid = false;
+            }
+
+            if (confirmPwdInput.value !== passwordInput.value) {
+                errorElements.confirmPwd.style.display = 'block';
+                isValid = false;
+            }
+
+            if (realNameInput.value.trim() === '') {
+                errorElements.realName.style.display = 'block';
+                isValid = false;
+            }
+
+            if (phoneInput.value.trim() === '') {
+                errorElements.phone.textContent = '手机号码不能为空';
+                errorElements.phone.style.display = 'block';
+                isValid = false;
+            } else if (!phoneRegex.test(phoneInput.value)) {
+                errorElements.phone.textContent = '请输入有效的手机号码';
+                errorElements.phone.style.display = 'block';
+                isValid = false;
+            }
+
+            if (!memberTypeSelect.value) {
+                errorElements.memberType.style.display = 'block';
+                isValid = false;
+            }
+
+            if (!agreeCheckbox.checked) {
+                errorElements.agree.style.display = 'block';
+                isValid = false;
+            }
+
+            if (isValid) {
+                const registerData = {
+                    username: usernameInput.value.trim(),
+                    memberCard: memberCardInput.value.trim(),
+                    password: passwordInput.value,
+                    realName: realNameInput.value.trim(),
+                    phone: phoneInput.value.trim(),
+                    memberType: memberTypeSelect.value
+                };
+                console.log('注册数据：', registerData);
+                alert(`注册成功！欢迎${realNameInput.value}成为我们的会员`);
+                // 注册成功后自动跳转到登录页
+                window.location.href = 'gym_登录.html';
+            }
+        });
+
+        const inputElements = [
+            usernameInput, memberCardInput, passwordInput,
+            confirmPwdInput, realNameInput, phoneInput
+        ];
+
+        inputElements.forEach(input => {
+            input.addEventListener('focus', function () {
+                const errorId = `${this.id}Error`;
+                const errorEl = document.getElementById(errorId);
+                if (errorEl) errorEl.style.display = 'none';
+            });
+        });
+
+        // 手机号实时验证
+        phoneInput.addEventListener('input', function () {
+            if (this.value && !phoneRegex.test(this.value)) {
+                errorElements.phone.textContent = '请输入有效的手机号码';
+                errorElements.phone.style.display = 'block';
+            } else {
+                errorElements.phone.style.display = 'none';
+            }
+        });
+
+        memberTypeSelect.addEventListener('change', () => {
+            errorElements.memberType.style.display = 'none';
+        });
+
+        agreeCheckbox.addEventListener('change', () => {
+            errorElements.agree.style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
