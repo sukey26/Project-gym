@@ -15,7 +15,7 @@
          padding: 20px;
          margin: 0;
          /* 设置全屏背景图 */
-         background: url("3.jpg") no-repeat center center fixed;
+         background: url("../pic/3.jpg") no-repeat center center fixed;
          background-size: cover;
          /* 图片铺满整个屏幕 */
          position: relative;
