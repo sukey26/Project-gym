@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>健身房会员管理 - 个人中心</title>
+  <style>
+    /* 全局样式 - 完全匹配登录/注册页风格 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', 'Microsoft Yahei', sans-serif;
+    }
+
+    body {
+      /* 大背景改为浅橙色渐变（主色调浅橙） */
+      background: linear-gradient(135deg, #fff8f3 0%, #ffd9b7 100%);
+      color: #333;
+      /* 全局文字改为深色，适配浅色背景 */
+      min-height: 100vh;
+    }
+
+    /* 顶部导航栏 - 调整配色适配浅背景 */
+    .top-nav {
+      background: rgba(255, 255, 255, 0.9);
+      /* 导航栏改为白色半透明 */
+      padding: 18px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ff6b00;
+      /* 保留橙色高亮边框 */
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      /* 增加轻微阴影提升层次感 */
+    }
+
+    .top-nav h1 {
+      font-size: 24px;
+      color: #ff6b00;
+      /* 主题橙保留 */
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-info .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #ff6b00;
+      /* 橙色边框保留 */
+      object-fit: cover;
+    }
+
+    .user-info span {
+      font-size: 16px;
+      color: #333;
+      /* 文字改为深灰色 */
+    }
+
+    .logout-btn {
+      background: linear-gradient(to right, #ff6b00, #ff8c00);
+      /* 渐变按钮保留 */
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(255, 107, 0, 0.5);
+    }
+
+    /* 主体容器 */
+    .container {
+      display: flex;
+      padding: 30px;
+      gap: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* 左侧侧边栏 - 改为浅白色系 */
+    .sidebar {
+      width: 220px;
+      background: rgba(255, 255, 255, 0.95);
+      /* 侧边栏改为纯白半透明 */
+      border-radius: 15px;
+      padding: 20px 0;
+      border: 1px solid #eee;
+      /* 边框改为浅灰色 */
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li a {
+      display: block;
+      padding: 15px 25px;
+      color: #333;
+      /* 菜单文字改为深灰色 */
+      text-decoration: none;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar ul li a:hover {
+      background: rgba(255, 107, 0, 0.05);
+      /* hover背景改为浅橙透明 */
+      border-left: 3px solid #ff6b00;
+      color: #ff6b00;
+      /* hover文字变橙色 */
+    }
+
+    .sidebar ul li.active a {
+      background: rgba(255, 107, 0, 0.1);
+      /* 选中背景浅橙 */
+      border-left: 3px solid #ff6b00;
+      color: #ff6b00;
+      font-weight: 600;
+    }
+
+    .sidebar .submenu {
+      background: rgba(255, 255, 255, 0.8);
+      /* 子菜单纯白 */
+      display: none;
+    }
+
+    .sidebar .submenu li a {
+      padding-left: 40px;
+      font-size: 14px;
+      color: #666;
+      /* 子菜单文字浅灰 */
+    }
+
+    /* 主内容区 - 卡片改为纯白色 */
+    .main-content {
+      flex: 1;
+    }
+
+    .info-card {
+      background: rgba(255, 255, 255, 0.95);
+      /* 内容卡片纯白半透明 */
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid #eee;
+      /* 边框浅灰 */
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .info-card h2 {
+      font-size: 22px;
+      color: #ff6b00;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      /* 分割线浅灰 */
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid #eee;
+      /* 分割线浅灰 */
+    }
+
+    .form-row:last-child {
+      border-bottom: none;
+    }
+
+    .form-row label {
+      width: 120px;
+      font-size: 16px;
+      color: #666;
+      /* 标签文字浅灰 */
+    }
+
+    .form-row input,
+    .form-row span {
+      flex: 1;
+      font-size: 16px;
+      padding: 12px 15px;
+      border-radius: 8px;
+    }
+
+    .form-row input {
+      /* 输入框改为浅色系 */
+      background: #f9f9f9;
+      /* 输入框背景浅灰 */
+      border: 1px solid #ddd;
+      /* 边框浅灰 */
+      color: #333;
+      /* 输入框文字深色 */
+      transition: all 0.3s ease;
+    }
+
+    .form-row input:focus {
+      outline: none;
+      border-color: #ff6b00;
+      box-shadow: 0 0 8px rgba(255, 107, 0, 0.15);
+      /* 焦点阴影浅化 */
+      background: #fff;
+      /* 焦点时背景纯白 */
+    }
+
+    .form-row span {
+      background: transparent;
+      border: none;
+      color: #333;
+      /* 文本内容深色 */
+      padding-left: 0;
+    }
+
+    .avatar-preview img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 2px solid #ff6b00;
+      object-fit: cover;
+    }
+
+    /* 确认按钮 - 保留渐变橙色 */
+    .confirm-btn {
+      background: linear-gradient(to right, #ff6b00, #ff8c00);
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 30px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      transition: all 0.3s ease;
+    }
+
+    .confirm-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 107, 0, 0.2);
+      /* 按钮阴影浅化 */
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 顶部导航栏 -->
+  <header class="top-nav">
+    <h1>健身房会员管理系统</h1>
+    <div class="user-info">
+      <span>当前登录：顾亿</span>
+      <img src="https://placekitten.com/50/50" alt="头像" class="avatar">
+      <button class="logout-btn">退出登录</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- 左侧侧边栏 -->
+    <aside class="sidebar">
+      <nav>
+        <ul>
+          <li><a href="#">首页</a></li>
+          <li class="has-sub">
+            <a href="#">会员中心</a>
+            <ul class="submenu">
+              <li><a href="#">个人信息</a></li>
+              <li class="active"><a href="#">修改个人信息</a></li>
+            </ul>
+          </li>
+          <li><a href="#">课程管理</a></li>
+          <li><a href="#">我的教练</a></li>
+          <li><a href="#">消费记录</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div class="info-card">
+        <h2>修改个人信息</h2>
+        <div class="form-row">
+          <label>头像：</label>
+          <div class="avatar-preview">
+            <img src="https://placekitten.com/70/70" alt="头像预览">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>会员账号：</label>
+          <span>GY20240320</span>
+        </div>
+        <div class="form-row">
+          <label>姓名：</label>
+          <input type="text" value="顾亿">
+        </div>
+        <div class="form-row">
+          <label>性别：</label>
+          <span>女</span>
+        </div>
+        <div class="form-row">
+          <label>年龄：</label>
+          <input type="number" value="21">
+        </div>
+        <div class="form-row">
+          <label>联系方式：</label>
+          <input type="text" value="13800138000">
+        </div>
+        <div class="form-row">
+          <label>身高(cm)：</label>
+          <input type="text" value="165">
+        </div>
+        <div class="form-row">
+          <label>体重(kg)：</label>
+          <input type="text" value="52">
+        </div>
+        <div class="form-row">
+          <label>剩余课时：</label>
+          <span>38 节</span>
+        </div>
+      </div>
+      <button class="confirm-btn">确认修改</button>
+    </main>
+  </div>
+
+  <script>
+    // 确认修改交互
+    document.querySelector('.confirm-btn').addEventListener('click', function () {
+      alert('✅ 个人信息修改成功！');
+    });
+
+    // 侧边栏子菜单展开/收起
+    document.querySelectorAll('.has-sub > a').forEach(item => {
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
+        const submenu = this.nextElementSibling;
+        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+
+    // 初始化展开会员中心子菜单
+    document.querySelector('.has-sub .submenu').style.display = 'block';
+
+    // 退出登录交互
+    document.querySelector('.logout-btn').addEventListener('click', function () {
+      if (confirm('确定要退出登录吗？')) {
+        window.location.href = 'login.html'; // 跳转到登录页
+      }
+    });
+  </script>
+</body>
+
+</html>
