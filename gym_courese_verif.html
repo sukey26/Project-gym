@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>健身房会员管理系统 - 修改个人信息</title>
+  <title>健身房会员管理系统 - 课程核销</title>
   <style>
     * {
       margin: 0;
@@ -18,7 +18,6 @@
       color: #333;
     }
 
-    /* 顶部导航 */
     .top-nav {
       background-color: #ff7d00;
       color: white;
@@ -62,15 +61,14 @@
       font-size: 14px;
     }
 
-    /* 主容器 */
     .main-container {
       display: flex;
       margin-top: 20px;
     }
 
-    /* 左侧侧边栏 - 最终统一样式 */
+    /* ========== 统一侧边栏样式 ========== */
     .sidebar {
-      width: 220px;
+      width: 180px;
       background-color: #ffffff;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -125,86 +123,92 @@
       color: #ff7d00;
     }
 
-    /* 内容区 */
     .content-area {
       flex: 1;
       padding: 0 30px 30px 30px;
     }
 
-    /* 详情卡片样式 */
-    .info-card {
-      background: #fff;
+    .verify-box {
+      background: white;
       padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin: 30px auto;
+      text-align: center;
     }
 
-    .info-card h2 {
+    .verify-box h2 {
       color: #ff7d00;
       margin-bottom: 20px;
-      font-size: 18px;
     }
 
-    .form-row {
-      display: flex;
-      margin-bottom: 15px;
-      align-items: center;
+    .input-group {
+      margin: 15px 0;
+      text-align: left;
     }
 
-    .form-row label {
-      width: 80px;
+    .input-group label {
+      display: block;
+      margin-bottom: 6px;
       font-weight: 500;
-      color: #555;
     }
 
-    .form-row input {
-      flex: 1;
-      padding: 8px 12px;
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 10px;
       border: 1px solid #ddd;
-      border-radius: 4px;
-      outline: none;
+      border-radius: 5px;
+      font-size: 14px;
     }
 
-    .form-row input:read-only {
-      background-color: #f9f9f9;
-      color: #888;
+    .verify-btn {
+      background-color: #ff7d00;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    .verify-btn:hover {
+      background-color: #ff6a00;
     }
   </style>
 </head>
 
 <body>
-  <!-- 顶部导航 -->
   <div class="top-nav">
     <div class="title">健身房会员管理系统</div>
     <div class="user-info">
-      <span>当前登录：顾亿</span>
+      <span>会员：顾亿</span>
       <div class="avatar">顾</div>
-      <button class="logout">退出登录</button>
+      <button class="logout">退出</button>
     </div>
   </div>
 
-  <!-- 主内容区 -->
   <div class="main-container">
-    <!-- 左侧侧边栏 -->
     <div class="sidebar">
       <div class="nav-item">首页</div>
 
-      <!-- 会员中心菜单 -->
-      <div class="nav-item parent active">
+      <div class="nav-item parent">
         <div class="parent-title" onclick="toggleSubMenu('member')">会员中心</div>
-        <div class="sub-menu show" id="member-sub">
+        <div class="sub-menu" id="member-sub">
           <div class="sub-item">个人信息</div>
-          <div class="sub-item active">修改个人信息</div>
+          <div class="sub-item">修改个人信息</div>
         </div>
       </div>
 
-      <!-- 课程管理菜单 -->
-      <div class="nav-item parent">
+      <div class="nav-item parent active">
         <div class="parent-title" onclick="toggleSubMenu('course')">课程管理</div>
-        <div class="sub-menu" id="course-sub">
+        <div class="sub-menu show" id="course-sub">
           <div class="sub-item">课程查看</div>
           <div class="sub-item">课程预约</div>
-          <div class="sub-item">课程核销</div>
+          <div class="sub-item active">课程核销</div>
         </div>
       </div>
 
@@ -212,47 +216,27 @@
       <div class="nav-item">消费记录</div>
     </div>
 
-    <!-- 右侧主内容 -->
     <div class="content-area">
-      <div class="info-card">
-        <h2>修改个人信息</h2>
-        <div class="form-row">
-          <label>会员账号：</label>
-          <input type="text" value="GY20240320" readonly>
+      <div class="verify-box">
+        <h2>课程核销</h2>
+        <div class="input-group">
+          <label>预约码 / 手机号</label>
+          <input type="text" placeholder="请输入预约码或手机号">
         </div>
-        <div class="form-row">
-          <label>姓名：</label>
-          <input type="text" value="顾亿">
+        <div class="input-group">
+          <label>选择课程</label>
+          <select>
+            <option>减脂系统课</option>
+            <option>塑形系统课</option>
+            <option>增肌系统课</option>
+            <option>有氧系统课</option>
+          </select>
         </div>
-        <div class="form-row">
-          <label>性别：</label>
-          <input type="text" value="女">
-        </div>
-        <div class="form-row">
-          <label>年龄：</label>
-          <input type="text" value="21">
-        </div>
-        <div class="form-row">
-          <label>联系方式：</label>
-          <input type="text" value="13800138000">
-        </div>
-        <div class="form-row">
-          <label>身高(cm)：</label>
-          <input type="text" value="165">
-        </div>
-        <div class="form-row">
-          <label>体重(kg)：</label>
-          <input type="text" value="52">
-        </div>
-        <div class="form-row">
-          <label>剩余课时：</label>
-          <input type="text" value="38节" readonly>
-        </div>
+        <button class="verify-btn">确认核销</button>
       </div>
     </div>
   </div>
 
-  <!-- 交互脚本 -->
   <script>
     function toggleSubMenu(id) {
       const subMenu = document.getElementById(id + '-sub');

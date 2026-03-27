@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>健身房会员管理系统 - 课程查看</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      background-color: #fff3e6;
+      color: #333;
+    }
+
+    .top-nav {
+      background-color: #ff7d00;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav .title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .top-nav .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .top-nav .user-info .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ff7d00;
+      font-weight: bold;
+    }
+
+    .top-nav .user-info .logout {
+      background-color: #ff9a3c;
+      border: none;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .main-container {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    .sidebar {
+      width: 180px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-left: 20px;
+      overflow: hidden;
+    }
+
+    .sidebar .nav-item {
+      padding: 12px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar .nav-item:hover,
+    .sidebar .nav-item.active {
+      background-color: #fff8ee;
+      color: #ff7d00;
+      font-weight: 500;
+    }
+
+    .sidebar .nav-item.parent {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    .sidebar .nav-item.parent>.parent-title {
+      padding: 12px 20px;
+      width: 100%;
+    }
+
+    .sidebar .sub-menu {
+      display: none;
+      background-color: #fafafa;
+    }
+
+    .sidebar .sub-menu.show {
+      display: block;
+    }
+
+    .sidebar .sub-item {
+      padding: 10px 30px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar .sub-item:hover,
+    .sidebar .sub-item.active {
+      background-color: #fff3e6;
+      color: #ff7d00;
+    }
+
+    .content-area {
+      flex: 1;
+      padding: 0 30px 30px 30px;
+    }
+
+    .search-bar {
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-bar input {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    .view-all {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .view-all a {
+      color: #ff7d00;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .course-card {
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+
+    .course-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .course-card .course-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .course-card .course-info {
+      padding: 15px;
+    }
+
+    .course-card .course-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .course-card .course-desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .course-card .drop-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 8px;
+      background-color: #f56c6c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .course-card .drop-btn:hover {
+      background-color: #f05050;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-nav">
+    <div class="title">健身房会员管理系统</div>
+    <div class="user-info">
+      <span>会员：顾亿</span>
+      <div class="avatar">顾</div>
+      <button class="logout">退出</button>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="sidebar">
+      <div class="nav-item">首页</div>
+
+      <div class="nav-item parent">
+        <div class="parent-title" onclick="toggleSubMenu('member')">会员中心</div>
+        <div class="sub-menu" id="member-sub">
+          <div class="sub-item">个人信息</div>
+          <div class="sub-item">修改个人信息</div>
+        </div>
+      </div>
+
+      <div class="nav-item parent active">
+        <div class="parent-title" onclick="toggleSubMenu('course')">课程管理</div>
+        <div class="sub-menu show" id="course-sub">
+          <div class="sub-item active">课程查看</div>
+          <div class="sub-item">课程预约</div>
+          <div class="sub-item">课程核销</div>
+        </div>
+      </div>
+
+      <div class="nav-item">我的教练</div>
+      <div class="nav-item">消费记录</div>
+    </div>
+
+    <div class="content-area">
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="搜索课程...">
+      </div>
+
+      <div class="view-all">
+        <a href="#">查看全部 →</a>
+      </div>
+
+      <div class="course-grid">
+        <div class="course-card">
+          <img src="https://picsum.photos/seed/jianzhi/220/160" alt="减脂" class="course-img">
+          <div class="course-info">
+            <div class="course-title">减脂</div>
+            <div class="course-desc">减脂体验课</div>
+            <div class="course-desc">教练：B哥</div>
+            <div class="course-desc">地点：一楼健身厅</div>
+            <button class="drop-btn">退课</button>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <img src="https://picsum.photos/seed/suxing/220/160" alt="塑形" class="course-img">
+          <div class="course-info">
+            <div class="course-title">塑形</div>
+            <div class="course-desc">塑形体验课</div>
+            <div class="course-desc">教练：A哥</div>
+            <div class="course-desc">地点：一楼健身厅</div>
+            <button class="drop-btn">退课</button>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <img src="https://picsum.photos/seed/zengji/220/160" alt="增肌" class="course-img">
+          <div class="course-info">
+            <div class="course-title">增肌</div>
+            <div class="course-desc">增肌体验课</div>
+            <div class="course-desc">教练：C姐</div>
+            <div class="course-desc">地点：一楼健身厅</div>
+            <button class="drop-btn">退课</button>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <img src="https://picsum.photos/seed/yangyou/220/160" alt="有氧" class="course-img">
+          <div class="course-info">
+            <div class="course-title">有氧</div>
+            <div class="course-desc">有氧体验课</div>
+            <div class="course-desc">教练：D姐</div>
+            <div class="course-desc">地点：一楼健身厅</div>
+            <button class="drop-btn">退课</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSubMenu(id) {
+      const subMenu = document.getElementById(id + '-sub');
+      subMenu.classList.toggle('show');
+    }
+  </script>
+</body>
+
+</html>
