@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>健身房会员管理系统 - 系统参数设置</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      background-color: #fff3e6;
+      color: #333;
+    }
+
+    /* 顶部导航 - 统一橙色 */
+    .top-nav {
+      background-color: #ff7d00;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav .title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .top-nav .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .top-nav .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: #fff;
+      color: #ff7d00;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-nav .logout {
+      background-color: #ff9a3c;
+      border: none;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* 主布局 */
+    .main-container {
+      display: flex;
+      margin-top: 20px;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* 左侧侧边栏 - 完全统一 */
+    .sidebar {
+      width: 180px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-left: 20px;
+      overflow: hidden;
+    }
+
+    .sidebar .nav-item {
+      padding: 12px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar .nav-item:hover,
+    .sidebar .nav-item.active {
+      background-color: #fff8ee;
+      color: #ff7d00;
+      font-weight: 500;
+    }
+
+    .sidebar .nav-item.parent {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    .sidebar .nav-item.parent>.parent-title {
+      padding: 12px 20px;
+      width: 100%;
+    }
+
+    .sidebar .sub-menu {
+      display: none;
+      background-color: #fafafa;
+    }
+
+    .sidebar .sub-menu.show {
+      display: block;
+    }
+
+    .sidebar .sub-item {
+      padding: 10px 30px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar .sub-item:hover,
+    .sidebar .sub-item.active {
+      background-color: #fff3e6;
+      color: #ff7d00;
+    }
+
+    /* 右侧内容区 */
+    .content-area {
+      flex: 1;
+      padding: 0 30px 30px 30px;
+    }
+
+    /* 卡片容器 */
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background-color: #ff7d00;
+      display: inline-block;
+      border-radius: 2px;
+    }
+
+    /* 表单布局 */
+    .form-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .form-row label {
+      width: 180px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .form-row input {
+      flex: 1;
+      max-width: 300px;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .form-row input:focus {
+      border-color: #ff7d00;
+    }
+
+    /* 开关样式 */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #ff7d00;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(26px);
+    }
+
+    /* 提示条 */
+    .warning-bar {
+      background-color: #ffebee;
+      border-left: 4px solid #f44336;
+      color: #f44336;
+      padding: 12px 15px;
+      margin: 15px 0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* 保存按钮 */
+    .save-btn {
+      padding: 10px 25px;
+      background-color: #ff7d00;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      float: right;
+      margin-top: 20px;
+    }
+
+    .save-btn:hover {
+      background-color: #ff6a00;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 顶部 -->
+  <div class="top-nav">
+    <div class="title">健身房会员管理系统</div>
+    <div class="user-info">
+      <span>管理员：林莘</span>
+      <div class="avatar">林</div>
+      <button class="logout">退出</button>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="main-container">
+    <!-- 左侧菜单 -->
+    <div class="sidebar">
+      <div class="nav-item">首页</div>
+
+      <div class="nav-item parent">
+        <div class="parent-title" onclick="toggleSubMenu('admin')">管理员中心</div>
+        <div class="sub-menu" id="admin-sub">
+          <div class="sub-item">系统设置</div>
+        </div>
+      </div>
+
+      <div class="nav-item parent">
+        <div class="parent-title" onclick="toggleSubMenu('member')">会员管理</div>
+        <div class="sub-menu" id="member-sub">
+          <div class="sub-item">会员列表</div>
+        </div>
+      </div>
+
+      <div class="nav-item parent active">
+        <div class="parent-title" onclick="toggleSubMenu('course')">课程核销</div>
+        <div class="sub-menu show" id="course-sub">
+          <div class="sub-item">会员查询</div>
+          <div class="sub-item active">系统参数设置</div>
+          <div class="sub-item">数据查询导出</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧内容 -->
+    <div class="content-area">
+      <button class="save-btn" onclick="saveConfig()">保存配置</button>
+
+      <!-- 系统全局参数设置 -->
+      <div class="card">
+        <div class="card-title">系统全局参数设置</div>
+        <p style="color: #666; margin-bottom: 20px;">此处的修改将立即生效并同步至所有前端应用，请谨慎操作</p>
+
+        <div class="form-row">
+          <label>课程预约上限 (人/课)：</label>
+          <input type="number" value="50" id="courseLimit">
+        </div>
+
+        <div class="form-row">
+          <label>允许取消时限 (小时)：</label>
+          <input type="number" value="4" id="cancelTime">
+        </div>
+
+        <div class="form-row">
+          <label>核销有效时长 (分钟)：</label>
+          <input type="number" placeholder="请输入核销有效时长" id="verifyDuration">
+        </div>
+      </div>
+
+      <!-- 系统稳定性与安全 -->
+      <div class="card">
+        <div class="card-title">系统稳定性与安全</div>
+
+        <div class="form-row">
+          <label>并发请求限制：</label>
+          <input type="number" placeholder="请输入并发请求限制数值" id="apiLimit">
+        </div>
+
+        <div class="warning-bar">
+          ⚠️ 安全警示：修改QPS限制会直接影响全集群API响应，请根据当前的服务器配置合理设置
+        </div>
+
+        <div class="form-row">
+          <label>日志保留期限 (天)：</label>
+          <input type="number" placeholder="请输入天数" id="logRetention">
+        </div>
+
+        <div class="form-row">
+          <label>系统维护模式：</label>
+          <label class="switch">
+            <input type="checkbox" id="maintainMode">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 消息推送策略 -->
+      <div class="card">
+        <div class="card-title">消息推送策略</div>
+
+        <div class="form-row">
+          <label>预约成功通知：</label>
+          <label class="switch">
+            <input type="checkbox" checked id="notifySuccess">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>深夜短信静默：</label>
+          <label class="switch">
+            <input type="checkbox" checked id="silentNight">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label>异常登录警报：</label>
+          <label class="switch">
+            <input type="checkbox" checked id="alertLogin">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSubMenu(id) {
+      const subMenu = document.getElementById(id + '-sub');
+      subMenu.classList.toggle('show');
+    }
+
+    function saveConfig() {
+      alert("系统参数保存成功！");
+    }
+  </script>
+</body>
+
+</html>

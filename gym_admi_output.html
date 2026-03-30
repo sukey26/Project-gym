@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>健身房会员管理系统 - 数据查询导出</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      background-color: #fff3e6;
+      color: #333;
+    }
+
+    /* 顶部导航 - 统一橙色 */
+    .top-nav {
+      background-color: #ff7d00;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav .title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .top-nav .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .top-nav .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: #fff;
+      color: #ff7d00;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-nav .logout {
+      background-color: #ff9a3c;
+      border: none;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* 主布局 */
+    .main-container {
+      display: flex;
+      margin-top: 20px;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* 左侧侧边栏 - 完全统一 */
+    .sidebar {
+      width: 180px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-left: 20px;
+      overflow: hidden;
+    }
+
+    .sidebar .nav-item {
+      padding: 12px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar .nav-item:hover,
+    .sidebar .nav-item.active {
+      background-color: #fff8ee;
+      color: #ff7d00;
+      font-weight: 500;
+    }
+
+    .sidebar .nav-item.parent {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    .sidebar .nav-item.parent>.parent-title {
+      padding: 12px 20px;
+      width: 100%;
+    }
+
+    .sidebar .sub-menu {
+      display: none;
+      background-color: #fafafa;
+    }
+
+    .sidebar .sub-menu.show {
+      display: block;
+    }
+
+    .sidebar .sub-item {
+      padding: 10px 30px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar .sub-item:hover,
+    .sidebar .sub-item.active {
+      background-color: #fff3e6;
+      color: #ff7d00;
+    }
+
+    /* 右侧内容区 */
+    .content-area {
+      flex: 1;
+      padding: 0 30px 30px 30px;
+    }
+
+    /* 页面标题 */
+    .page-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-title::before {
+      content: "↓";
+      color: #ff7d00;
+      font-size: 20px;
+    }
+
+    /* 卡片容器 */
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header {
+      background-color: #e0e0e0;
+      padding: 12px 15px;
+      border-radius: 6px 6px 0 0;
+      margin: -20px -20px 20px -20px;
+    }
+
+    .card-header h3 {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .card-header p {
+      font-size: 13px;
+      color: #555;
+      margin-top: 5px;
+    }
+
+    /* 维度选择 */
+    .dim-row {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 25px;
+    }
+
+    .dim-item {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dim-item.active {
+      border-color: #ff7d00;
+      background-color: #fff3e6;
+    }
+
+    .dim-item:hover {
+      border-color: #ff7d00;
+    }
+
+    .dim-item .icon {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .dim-item .label {
+      font-size: 14px;
+    }
+
+    /* 时间范围 */
+    .time-row {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 25px;
+    }
+
+    .time-item {
+      flex: 1;
+    }
+
+    .time-item label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .time-item select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* 按钮组 */
+    .btn-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn-export {
+      flex: 1;
+      padding: 12px;
+      background-color: #ff7d00;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      padding: 12px 25px;
+      background-color: white;
+      color: #333;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* 导出记录表格 */
+    .record-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .record-table th,
+    .record-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .record-table th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .download-link {
+      color: #0066ff;
+      cursor: pointer;
+    }
+
+    .status-cleared {
+      color: #999;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 顶部导航 -->
+  <div class="top-nav">
+    <div class="title">健身房会员管理系统</div>
+    <div class="user-info">
+      <span>管理员：林莘</span>
+      <div class="avatar">林</div>
+      <button class="logout">退出</button>
+    </div>
+  </div>
+
+  <!-- 主容器 -->
+  <div class="main-container">
+    <!-- 左侧侧边栏 -->
+    <div class="sidebar">
+      <div class="nav-item">首页</div>
+
+      <div class="nav-item parent">
+        <div class="parent-title" onclick="toggleSubMenu('admin')">管理员中心</div>
+        <div class="sub-menu" id="admin-sub">
+          <div class="sub-item">系统设置</div>
+        </div>
+      </div>
+
+      <div class="nav-item parent">
+        <div class="parent-title" onclick="toggleSubMenu('member')">会员管理</div>
+        <div class="sub-menu" id="member-sub">
+          <div class="sub-item">会员列表</div>
+        </div>
+      </div>
+
+      <div class="nav-item parent active">
+        <div class="parent-title" onclick="toggleSubMenu('course')">课程核销</div>
+        <div class="sub-menu show" id="course-sub">
+          <div class="sub-item">会员查询</div>
+          <div class="sub-item">系统参数设置</div>
+          <div class="sub-item active">数据查询导出</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧内容区 -->
+    <div class="content-area">
+      <div class="page-title">业务数据导出</div>
+
+      <!-- 导出任务筛选器 -->
+      <div class="card">
+        <div class="card-header">
+          <h3>导出任务筛选器</h3>
+          <p>请选择导出维度并设置时间范围。所有导出文件将保留7天</p>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <p style="font-size: 16px; font-weight: 500; margin-bottom: 15px;">1. 选择查询维度</p>
+          <div class="dim-row">
+            <div class="dim-item active" onclick="selectDim(this)">
+              <div class="icon">👥</div>
+              <div class="label">会员库数据</div>
+            </div>
+            <div class="dim-item" onclick="selectDim(this)">
+              <div class="icon">📖</div>
+              <div class="label">课程销售流水</div>
+            </div>
+            <div class="dim-item" onclick="selectDim(this)">
+              <div class="icon">🧾</div>
+              <div class="label">核销核算清单</div>
+            </div>
+          </div>
+
+          <p style="font-size: 16px; font-weight: 500; margin-bottom: 15px;">2. 时间范围限定</p>
+          <div class="time-row">
+            <div class="time-item">
+              <label>开始日期</label>
+              <select>
+                <option>请选择开始日期</option>
+                <option>2026-03-01</option>
+                <option>2026-02-01</option>
+              </select>
+            </div>
+            <div class="time-item">
+              <label>结束日期</label>
+              <select>
+                <option>请选择结束日期</option>
+                <option>2026-03-31</option>
+                <option>2026-02-28</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-export" onclick="exportData()">生成并导出报表</button>
+            <button class="btn-cancel" onclick="resetForm()">取消</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 我的导出记录 -->
+      <div class="card">
+        <div class="card-header">
+          <h3>☰ 我的导出记录（最近5条）</h3>
+        </div>
+
+        <table class="record-table">
+          <thead>
+            <tr>
+              <th>文件名</th>
+              <th>导出时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>📄 2026核销流水报表.xlsx</td>
+              <td>2026-03-11 14:00</td>
+              <td><span class="download-link">下载</span></td>
+            </tr>
+            <tr>
+              <td>📄 全体会员名录_异常终止.xlsx</td>
+              <td>2026-03-11 14:00</td>
+              <td><span class="status-cleared">已清理</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 切换维度选择
+    function selectDim(el) {
+      document.querySelectorAll('.dim-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      el.classList.add('active');
+    }
+
+    // 导出数据
+    function exportData() {
+      alert('报表生成中，请稍候...\n（模拟导出成功）');
+    }
+
+    // 重置表单
+    function resetForm() {
+      document.querySelectorAll('select').forEach(sel => {
+        sel.selectedIndex = 0;
+      });
+      document.querySelectorAll('.dim-item')[0].click();
+    }
+
+    // 菜单展开收起
+    function toggleSubMenu(id) {
+      const subMenu = document.getElementById(id + '-sub');
+      subMenu.classList.toggle('show');
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>健身房会员管理系统 - 管理员核销</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      background-color: #fff3e6;
+      color: #333;
+    }
+
+    /* 顶部导航 - 统一橙色 */
+    .top-nav {
+      background-color: #ff7d00;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav .title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .top-nav .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .top-nav .avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: #fff;
+      color: #ff7d00;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-nav .logout {
+      background-color: #ff9a3c;
+      border: none;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* 主布局 */
+    .main-container {
+      display: flex;
+      margin-top: 20px;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* 左侧侧边栏 - 完全统一 */
+    .sidebar {
+      width: 180px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-left: 20px;
+      overflow: hidden;
+    }
+
+    .sidebar .nav-item {
+      padding: 12px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar .nav-item:hover,
+    .sidebar .nav-item.active {
+      background-color: #fff8ee;
+      color: #ff7d00;
+      font-weight: 500;
+    }
+
+    .sidebar .nav-item.parent {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    .sidebar .nav-item.parent>.parent-title {
+      padding: 12px 20px;
+      width: 100%;
+    }
+
+    .sidebar .sub-menu {
+      display: none;
+      background-color: #fafafa;
+    }
+
+    .sidebar .sub-menu.show {
+      display: block;
+    }
+
+    .sidebar .sub-item {
+      padding: 10px 30px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .sidebar .sub-item:hover,
+    .sidebar .sub-item.active {
+      background-color: #fff3e6;
+      color: #ff7d00;
+    }
+
+    /* 右侧内容 */
+    .content-area {
+      flex: 1;
+      padding: 0 30px 30px 30px;
+    }
+
+    /* 顶部按钮组 */
+    .func-bar {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .func-btn {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* 卡片布局 */
+    .card-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin-bottom: 18px;
+      color: #333;
+    }
+
+    /* 会员查询模块 */
+    .search-box input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .search-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #ff7d00;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* 今日数据 */
+    .num-box {
+      font-size: 24px;
+      color: #ff4400;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 8px solid #ffe0b3;
+      border-top-color: #ff7d00;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .circle .val {
+      font-size: 22px;
+      color: #ff4400;
+      font-weight: bold;
+    }
+
+    /* 柱状图 */
+    .chart {
+      width: 100%;
+      height: 180px;
+      position: relative;
+      margin-top: 10px;
+    }
+
+    .bar {
+      position: absolute;
+      bottom: 25px;
+      width: 22px;
+      background: #ff7d00;
+      border-radius: 3px 3px 0 0;
+    }
+
+    .b1 {
+      left: 25px;
+      height: 35px
+    }
+
+    .b2 {
+      left: 55px;
+      height: 20px
+    }
+
+    .b3 {
+      left: 85px;
+      height: 25px
+    }
+
+    .b4 {
+      left: 115px;
+      height: 60px
+    }
+
+    .b5 {
+      left: 145px;
+      height: 90px
+    }
+
+    .b6 {
+      left: 175px;
+      height: 140px
+    }
+
+    .label {
+      position: absolute;
+      bottom: 5px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .l1 {
+      left: 25px
+    }
+
+    .l2 {
+      left: 55px
+    }
+
+    .l3 {
+      left: 85px
+    }
+
+    .l4 {
+      left: 115px
+    }
+
+    .l5 {
+      left: 145px
+    }
+
+    .l6 {
+      left: 175px
+    }
+
+    /* 表格 */
+    .table-box {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: none;
+      /* 默认隐藏 */
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+
+    .table-header a {
+      color: #ff7d00;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #fafafa;
+      font-weight: bold;
+    }
+
+    .done {
+      color: #ff4400;
+      font-weight: bold;
+    }
+
+    .cancel {
+      color: #34a853;
+      font-weight: bold;
+    }
+
+    /* 空数据提示 */
+    .empty-tip {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 顶部 -->
+  <div class="top-nav">
+    <div class="title">健身房会员管理系统</div>
+    <div class="user-info">
+      <span>管理员：林莘</span>
+      <div class="avatar">林</div>
+      <button class="logout">退出</button>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="main-container">
+    <!-- 左侧菜单 -->
+    <div class="sidebar">
+      <div class="nav-item">首页</div>
+
+      <div class="nav-item parent">
+        <div class="parent-title" onclick="toggleSubMenu('admin')">管理员中心</div>
+        <div class="sub-menu" id="admin-sub">
+          <div class="sub-item">系统设置</div>
+          <div class="sub-item">数据统计</div>
+        </div>
+      </div>
+
+      <div class="nav-item parent">
+        <div class="parent-title" onclick="toggleSubMenu('member')">会员管理</div>
+        <div class="sub-menu" id="member-sub">
+          <div class="sub-item">会员列表</div>
+          <div class="sub-item">会员信息</div>
+        </div>
+      </div>
+
+      <div class="nav-item parent active">
+        <div class="parent-title" onclick="toggleSubMenu('course')">课程核销</div>
+        <div class="sub-menu show" id="course-sub">
+          <div class="sub-item active">会员查询</div>
+          <div class="sub-item">数据查询导出</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧内容 -->
+    <div class="content-area">
+      <div class="func-bar">
+        <button class="func-btn">核销管理</button>
+        <button class="func-btn">数据统计</button>
+        <button class="func-btn">异常处理</button>
+        <button class="func-btn">系统设置</button>
+      </div>
+
+      <!-- 三卡片 -->
+      <div class="card-row">
+        <!-- 已改为：会员查询 -->
+        <div class="card search-box">
+          <h3>会员查询</h3>
+          <input type="text" id="searchInput" placeholder="请输入会员手机号/姓名">
+          <button class="search-btn" onclick="searchMember()">查询</button>
+        </div>
+
+        <div class="card">
+          <h3>今日核销数据</h3>
+          <div class="num-box">25</div>
+          <div class="circle">
+            <div style="font-size:13px; color:#666">核销金额</div>
+            <div class="val">2000</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>核销率</h3>
+          <div class="chart">
+            <div class="bar b1"></div>
+            <div class="bar b2"></div>
+            <div class="bar b3"></div>
+            <div class="bar b4"></div>
+            <div class="bar b5"></div>
+            <div class="bar b6"></div>
+            <div class="label l1">1月</div>
+            <div class="label l2">2月</div>
+            <div class="label l3">3月</div>
+            <div class="label l4">4月</div>
+            <div class="label l5">5月</div>
+            <div class="label l6">6月</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 空数据提示 -->
+      <div class="empty-tip" id="emptyTip">暂无该会员的核销记录</div>
+
+      <!-- 会员核销记录（查询后显示） -->
+      <div class="table-box" id="recordTable">
+        <div class="table-header">
+          <h3>会员核销记录</h3>
+          <a href="#">查看全部日志 →</a>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>课程名称</th>
+              <th>会员信息</th>
+              <th>核销状态</th>
+            </tr>
+          </thead>
+          <tbody id="recordBody">
+            <!-- 内容由JS动态生成 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 模拟会员数据
+    const memberRecords = {
+      "顾亿": [
+        { time: "2026-03-11 14:00", course: "减脂系统课", status: "已核销" },
+        { time: "2026-03-10 10:23", course: "塑形系统课", status: "已核销" }
+      ],
+      "13800138000": [
+        { time: "2026-03-11 14:00", course: "减脂系统课", status: "已核销" },
+        { time: "2026-03-10 10:23", course: "塑形系统课", status: "已核销" }
+      ],
+      "美少女": [
+        { time: "2026-03-11 10:23", course: "减脂体验课", status: "取消" }
+      ],
+      "孤狼": [
+        { time: "2026-03-11 14:00", course: "拳击进阶", status: "已核销" }
+      ]
+    };
+
+    // 会员查询功能
+    function searchMember() {
+      const keyword = document.getElementById('searchInput').value.trim();
+      const tableBox = document.getElementById('recordTable');
+      const emptyTip = document.getElementById('emptyTip');
+      const recordBody = document.getElementById('recordBody');
+
+      // 清空
+      recordBody.innerHTML = '';
+      tableBox.style.display = 'none';
+      emptyTip.style.display = 'none';
+
+      if (!keyword) {
+        emptyTip.innerText = '请输入会员信息';
+        emptyTip.style.display = 'block';
+        return;
+      }
+
+      // 判断是否有记录
+      if (!memberRecords[keyword]) {
+        emptyTip.style.display = 'block';
+        return;
+      }
+
+      // 渲染记录
+      let html = '';
+      memberRecords[keyword].forEach(item => {
+        const statusClass = item.status === '已核销' ? 'done' : 'cancel';
+        html += `
+          <tr>
+            <td>${item.time}</td>
+            <td>${item.course}</td>
+            <td>${keyword}</td>
+            <td class="${statusClass}">${item.status}</td>
+          </tr>
+        `;
+      });
+
+      recordBody.innerHTML = html;
+      tableBox.style.display = 'block';
+    }
+
+    // 菜单展开收起
+    function toggleSubMenu(id) {
+      const subMenu = document.getElementById(id + '-sub');
+      subMenu.classList.toggle('show');
+    }
+  </script>
+</body>
+
+</html>
